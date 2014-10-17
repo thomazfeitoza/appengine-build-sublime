@@ -1,0 +1,11 @@
+[{
+  "caption": "-",
+  "id": "side-bar-start-separator"
+}, {
+  "caption": "Build appengine",
+  "id": "side-bar-build-appengine",
+  "command": "app_engine_build",
+  "args": {
+    "paths": []
+  }
+}]

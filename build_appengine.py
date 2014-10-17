@@ -6,8 +6,17 @@ import sublime, sublime_plugin
 class AppEngineBuildCommand(sublime_plugin.WindowCommand):
   def run(self, paths = []):
     sublime.status_message("Initializing...")
+
+    settings = sublime.load_settings('AppengineBuild/AppengineBuild.sublime-settings')
+
+    project_path = settings.get('project_path')
+    project_name = settings.get('project_name')
+    project_name_camelized = project_name.split("_").each {|s| s.capitalize! }.join("")
+
+    os.chdir(project_path)
+
     sublime.status_message("Compiling project...")
-    os.system("endpointscfg.py get_client_lib java -bs gradle hubhug_api.HubhugApi")
+    os.system("endpointscfg.py get_client_lib java -bs gradle " + project_name + "." + project_name_camelized)
 
     sublime.status_message("Extracting files...")
     to_dir = "extracted-files"

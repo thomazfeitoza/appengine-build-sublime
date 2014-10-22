@@ -5,7 +5,7 @@ import sublime, sublime_plugin
 
 class AppEngineBuildCommand(sublime_plugin.WindowCommand):
   def run(self, paths = []):
-    settings = sublime.load_settings('AppengineBuild.sublime-settings')
+    settings = sublime.load_settings('AppEngineBuild.sublime-settings')
 
     project_path = settings.get('project_path')
     project_name = settings.get('project_name')

@@ -43,7 +43,7 @@ class AppEngineBuildCommand(sublime_plugin.WindowCommand):
 
     sublime.status_message("Endpoints extraction success!")
     
-    os.chdir(to_dir)
+    os.chdir(project_path+"/"+to_dir)
 
     sublime.status_message("Updating maven local repository...")
     os.system("gradle install")

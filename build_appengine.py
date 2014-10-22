@@ -1,7 +1,7 @@
 #coding: utf-8
 
 import sys, os, glob, zipfile, shutil
-import sublime, sublime_plugin
+import sublime, sublime_plugin, threading
 
 def get_members(zip):
     parts = []
@@ -22,33 +22,28 @@ class AppEngineBuildCommand(sublime_plugin.WindowCommand):
   def run(self, paths = []):
     settings = sublime.load_settings('AppEngineBuild.sublime-settings')
 
-    project_path = settings.get('project_path')
-    project_name = settings.get('project_name')
-    
-    api_name = settings.get('api_name')
+    endpointscfg = settings.get('endpointscfg')
+    gradle = settings.get('gradle')
 
-    os.chdir(project_path)
-    
-    sublime.status_message("Starting endpoints creation...")
-    os.system("endpointscfg.py get_client_lib java -bs gradle " + project_name + "." + api_name)
-    sublime.status_message("Endpoints generated with success!")
+    project_path = paths[0] 
+    settings.get(project_path)
+    if settings.get(project_path) != None:
+      project_name = settings.get(project_path).get('project_name')
+      api_name = settings.get(project_path).get('api_name')
 
-    to_dir = "extracted-files"
+      os.chdir(project_path)
+      os.system(endpointscfg+" get_client_lib java -bs gradle " + project_name + "." + api_name)
 
-    sublime.status_message("Extracting endpoints zip file...")
-    for file in glob.glob("*.zip"):
-      zip = zipfile.ZipFile(file)
-      zip.zip.extractall(to_dir, get_members(zip))
-      os.remove(file)
+      to_dir = "extracted-files"
+      for file in glob.glob("*.zip"):
+        zip = zipfile.ZipFile(file)
+        zip.extractall(to_dir, get_members(zip))
+        os.remove(file)
 
-    sublime.status_message("Endpoints extraction success!")
-    
-    os.chdir(project_path+"/"+to_dir)
-
-    sublime.status_message("Updating maven local repository...")
-    os.system("gradle install")
-    sublime.status_message("MAven local reposity updated with success!")
-
-    os.chdir("../")
-    shutil.rmtree(to_dir)
-    sublime.status_message("Build finished!")
+      os.chdir(to_dir)
+      os.system(gradle+" install")
+      os.chdir("../")
+      shutil.rmtree(to_dir)
+      sublime.status_message("Build finished!")
+    else:
+      sublime.error_message("Project \""+project_path+"\" not found in \"AppEngine Build -> user.settings\"")

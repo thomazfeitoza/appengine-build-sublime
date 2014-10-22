@@ -2,7 +2,7 @@
   "caption": "-",
   "id": "side-bar-start-separator"
 }, {
-  "caption": "Build appengine",
+  "caption": "AppEngine Build",
   "id": "side-bar-build-appengine",
   "command": "app_engine_build",
   "args": {

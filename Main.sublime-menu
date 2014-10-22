@@ -7,17 +7,17 @@
     "mnemonic": "P",
     "id": "package-settings",
     "children": [{
-      "caption": "AppengineBuild",
+      "caption": "AppEngine Build",
       "children": [{
-        "command": "open_file",
-        "args": {
-          "file": "${packages}/AppengineBuild/AppengineBuild.sublime-settings"
+        "command": "open_file", "args": 
+        {
+          "file": "${packages}/appengine-build-sublime/AppEngineBuild.sublime-settings"
         },
         "caption": "Settings – Default"
       }, {
-        "command": "open_file",
-        "args": {
-          "file": "${packages}/User/AppengineBuild.sublime-settings"
+        "command": "open_file", "args": 
+        {
+          "file": "${packages}/User/AppEngineBuild.sublime-settings"
         },
         "caption": "Settings – User"
       }]

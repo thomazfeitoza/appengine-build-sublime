@@ -16,6 +16,10 @@ class AppEngineBuildCommand(sublime_plugin.WindowCommand):
     os.system("endpointscfg.py get_client_lib java -bs gradle " + project_name + "." + api_name)
 
     to_dir = "extracted-files"
+
+    if not os.path.exists(os.getcwd() + "/" + to_dir): 
+      os.makedirs(os.getcwd() + "/" + to_dir)
+
     for file in glob.glob("*.zip"):
       zip = zipfile.ZipFile(file)
       zip.extractall(to_dir)

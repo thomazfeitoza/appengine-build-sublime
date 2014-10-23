@@ -1,9 +1,15 @@
 {
-  "endpointscfg": "/opt/google-cloud-sdk/bin/endpointscfg.py",
-  "gradle": "/opt/gradle-2.1/bin/gradle",
   //For each app engine project create an object like this
-  "/home/pedro/Projects/GoogleAppEngine/hubhug/backend-poc": { //absolute path to the app engine project
-    "project_name": "hubhug_api", //api file
-    "api_name": "HubhugApi" //api class name
+  "/Users/thomaz/Downloads/helloendpoints": { //absolute path to the app engine project
+    "project_name": "helloendpoints", //api file
+    "apis": [{
+      "module": "helloworld_api",
+      "class": "HelloWorldApi"
+    }]
+  },
+  "tools": {
+  	"endpointscfg": "/usr/local/bin/endpointscfg.py",
+  	"gradle": "/opt/gradle-2.1/bin/gradle",
+  	"service_generator": "ServiceGenerator"
   }
 }

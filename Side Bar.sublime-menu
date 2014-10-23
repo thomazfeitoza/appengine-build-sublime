@@ -2,10 +2,29 @@
   "caption": "-",
   "id": "side-bar-start-separator"
 }, {
-  "caption": "AppEngine Build",
-  "id": "side-bar-build-appengine",
-  "command": "app_engine_build",
-  "args": {
-    "paths": []
-  }
+	"caption": "AppEngine Endpoints",
+	"id": "side-bar-appengine-endpoints",
+
+	"children": [{
+		"caption": "Build All",
+		"id": "side-bar-appengine-endpoints-build-all",
+		"command": "app_engine_endpoints_build_all",
+		"args": {
+    		"paths": []
+  		}
+	}, {
+		"caption": "Build Android",
+		"id": "side-bar-appengine-endpoints-build-android",
+		"command": "app_engine_endpoints_build_android",
+		"args": {
+    		"paths": []
+  		}
+	}, {
+		"caption": "Build iOS",
+		"id": "side-bar-appengine-endpoints-build-ios",
+		"command": "app_engine_endpoints_build_ios",
+		"args": {
+    		"paths": []
+  		}
+	}]
 }]

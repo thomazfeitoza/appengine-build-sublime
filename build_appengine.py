@@ -77,16 +77,14 @@ class AppEngineEndpointsBuildThread(threading.Thread):
     endpointscfg = self.settings.get('tools').get('endpointscfg')
     gradle = self.settings.get('tools').get('gradle')
     project_path = self.paths[0]
+    apis = self.getApisAsString()
 
     sublime.status_message("Building AppEngine client lib for Android...")
-
-    apis = self.settings.get(project_path).get('apis')
-    apis_str = ' '.join(api.get('module') + '.' + api.get('class') for api in apis)
 
     os.chdir(project_path)
 
     try:
-      run_os_command(endpointscfg+" get_client_lib java -bs gradle " + apis_str)
+      run_os_command(endpointscfg+" get_client_lib java -bs gradle " + apis)
 
       to_dir = "extracted-files"
       for file in glob.glob("*.zip"):
@@ -106,4 +104,43 @@ class AppEngineEndpointsBuildThread(threading.Thread):
 
 
   def buildIOS(self):
-    sublime.status_message("iOS Build finished!")
+    endpointscfg = self.settings.get('tools').get('endpointscfg')
+    service_generator = self.settings.get('tools').get('service_generator')
+    project_path = self.paths[0]
+    apis = self.getApisAsString()
+    to_dir = './appengine_endpoints/ios_build'
+
+    sublime.status_message('Building AppEngine client lib for iOS...')
+
+    try:
+      os.chdir(project_path)
+      try:
+        shutil.rmtree(to_dir)
+      except Exception:
+        pass
+      run_os_command(endpointscfg + ' get_discovery_doc --format=rpc --output=./ ' + apis)
+      discovery_doc = glob.glob('*.discovery')[0]
+      run_os_command(service_generator + ' --output=' + to_dir + ' ' + discovery_doc)
+
+      for file in glob.glob('*.discovery'):
+        os.remove(file)
+
+      os.chdir(to_dir)
+      bridge_contents = '// To use your API with Swift you need go into your project on XCode,\n// open Build Settings tab and search for "bridging header".\n// Under the option Objective-C Bridging Header add the following line:\n// {YOUR_PROJECT_NAME}/GTLBridge.h\n\n'
+      for file in glob.glob('*.h'):
+        bridge_contents += '#import "' + file + '"\n'
+      bridge_file = open('GTLBridge.h', 'w')
+      bridge_file.write(bridge_contents)
+      bridge_file.close()
+
+      
+      sublime.status_message('iOS Build finished!')
+
+    except Exception as e:
+      sublime.error_message('iOS build failed:\n' + str(e))
+
+
+  def getApisAsString(self):
+    apis = self.settings.get(self.paths[0]).get('apis')
+    return ' '.join(api.get('module') + '.' + api.get('class') for api in apis)
+

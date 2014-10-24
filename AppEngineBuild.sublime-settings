@@ -10,6 +10,6 @@
   "tools": {
   	"endpointscfg": "/usr/local/bin/endpointscfg.py",
   	"gradle": "/opt/gradle-2.1/bin/gradle",
-  	"service_generator": "ServiceGenerator"
+  	"service_generator": "/usr/bin/local/ServiceGenerator"
   }
 }

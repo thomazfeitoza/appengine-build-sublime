@@ -5,11 +5,21 @@
     "apis": [{
       "module": "helloworld_api",
       "class": "HelloWorldApi"
-    }]
+    }],
+    "options": {
+      "android": {
+        
+      },
+      "ios": {
+        "remove_sources_file": true,
+        "generate_swift_bridge": true,
+        "build_output": "./appnegine_endpoints/ios_client_lib"
+      }
+    }
   },
   "tools": {
   	"endpointscfg": "/usr/local/bin/endpointscfg.py",
   	"gradle": "/opt/gradle-2.1/bin/gradle",
-  	"service_generator": "/usr/bin/local/ServiceGenerator"
+  	"service_generator": "/usr/bin/local/ServiceGenerator" // Only for OSX, use this gist to install: https://gist.github.com/thomazfeitoza/8a81d958b13e5f1a59cc
   }
 }

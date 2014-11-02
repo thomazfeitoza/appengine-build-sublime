@@ -106,9 +106,10 @@ class AppEngineEndpointsBuildThread(threading.Thread):
   def buildIOS(self):
     endpointscfg = self.settings.get('tools').get('endpointscfg')
     service_generator = self.settings.get('tools').get('service_generator')
+    ios_build_options = self.settings.get(self.paths[0]).get('options').get('ios')
     project_path = self.paths[0]
     apis = self.getApisAsString()
-    to_dir = './appengine_endpoints/ios_build'
+    to_dir = ios_build_options.get('build_output')
 
     sublime.status_message('Building AppEngine client lib for iOS...')
 
@@ -125,15 +126,18 @@ class AppEngineEndpointsBuildThread(threading.Thread):
       for file in glob.glob('*.discovery'):
         os.remove(file)
 
-      os.chdir(to_dir)
-      bridge_contents = '// To use your API with Swift you need go into your project on XCode,\n// open Build Settings tab and search for "bridging header".\n// Under the option Objective-C Bridging Header add the following line:\n// {YOUR_PROJECT_NAME}/GTLBridge.h\n\n'
-      for file in glob.glob('*.h'):
-        bridge_contents += '#import "' + file + '"\n'
-      bridge_file = open('GTLBridge.h', 'w')
-      bridge_file.write(bridge_contents)
-      bridge_file.close()
+      if(ios_build_options.get('remove_sources_file')):
+        os.remove(to_dir + '/*Sources.m')
 
-      
+      if(ios_build_options.get('generate_swift_bridge')):
+        os.chdir(to_dir)
+        bridge_contents = '// To use your API with Swift you need go into your project on XCode,\n// open Build Settings tab and search for "bridging header".\n// Under the option Objective-C Bridging Header add the following line:\n// {YOUR_PROJECT_NAME}/GTLBridge.h\n\n'
+        for file in glob.glob('*.h'):
+          bridge_contents += '#import "' + file + '"\n'
+        bridge_file = open('GTLBridge.h', 'w')
+        bridge_file.write(bridge_contents)
+        bridge_file.close()
+
       sublime.status_message('iOS Build finished!')
 
     except Exception as e:

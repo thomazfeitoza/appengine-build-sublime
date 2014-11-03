@@ -127,7 +127,8 @@ class AppEngineEndpointsBuildThread(threading.Thread):
         os.remove(file)
 
       if(ios_build_options.get('remove_sources_file')):
-        #os.remove(to_dir + '/*Sources.m')
+        for f in glob.glob(to_dir + '/*Sources.m'):
+          os.remove(f)
 
       if(ios_build_options.get('generate_swift_bridge')):
         os.chdir(to_dir)

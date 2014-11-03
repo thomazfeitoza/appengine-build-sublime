@@ -11,7 +11,7 @@
       },
       "ios": {
         "remove_sources_file": true,
-        "generate_swift_bridge": true,
+        "generate_swift_bridge": false,
         "build_output": "./appengine_endpoints/ios_client_lib" // without trailing slash
       }
     }

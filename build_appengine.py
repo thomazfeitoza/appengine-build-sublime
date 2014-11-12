@@ -115,10 +115,6 @@ class AppEngineEndpointsBuildThread(threading.Thread):
 
     try:
       os.chdir(project_path)
-      try:
-        shutil.rmtree(to_dir)
-      except Exception:
-        pass
       run_os_command(endpointscfg + ' get_discovery_doc --format=rpc --output=./ ' + apis)
       discovery_doc = glob.glob('*.discovery')[0]
       run_os_command(service_generator + ' --output=' + to_dir + ' ' + discovery_doc)

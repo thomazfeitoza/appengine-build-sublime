@@ -1,49 +1,44 @@
-class AppEngineEndpointsBuildThread(threading.Thread):
+#coding: utf-8
 
-  def __init__(self, paths=[], android=False, ios=False):
-    self.paths = paths
-    self.android = android
-    self.ios = ios
-    self.settings = sublime.load_settings('AppEngineBuild.sublime-settings')
+import os, glob, shutil, sublime, threading, zipfile
+from ..helper import run_os_command, get_members
+
+
+class AppEngineEndpointsBuildAndroid(threading.Thread):
+
+  def __init__(self, project_path, apis, endpointscfg, gradle):
+    self.project_path = project_path
+    self.apis = apis
+    self.endpointscfg = endpointscfg
+    self.gradle = gradle
     threading.Thread.__init__(self)
 
   def run(self):
-    project_path = self.paths[0]
+    self.build()
 
-    if self.settings.get(project_path) != None:
-      if(self.android):
-        self.buildAndroid()
-      if(self.ios):
-        self.buildIOS()
-    else:
-      sublime.error_message("Project \""+project_path+"\" not found in \"AppEngine Build -> user.settings\"")
-
-
-  def buildAndroid(self):
-    endpointscfg = self.settings.get('tools').get('endpointscfg')
-    gradle = self.settings.get('tools').get('gradle')
-    project_path = self.paths[0]
-    apis = self.getApisAsString()
-
+  def build(self):
     sublime.status_message("Building AppEngine client lib for Android...")
-
-    os.chdir(project_path)
-
+    os.chdir(self.project_path)
     try:
-      run_os_command(endpointscfg+" get_client_lib java -bs gradle " + apis)
+      tmp_dir = self.project_path + '/.tmp'
+      android_dir = tmp_dir + '/android'
+      run_os_command('rm -Rf ' + android_dir)
+      try:
+        os.makedirs(android_dir)
+      except OSError as e:
+        pass
 
-      to_dir = "extracted-files"
-      for file in glob.glob("*.zip"):
-        zip = zipfile.ZipFile(file)
-        zip.extractall(to_dir, get_members(zip))
-        os.remove(file)
+      run_os_command(self.endpointscfg + ' get_client_lib java --output=' + android_dir + '  -bs gradle ' + self.apis)
+      for filename in glob.glob(android_dir + "/*.zip"):
+        zip = zipfile.ZipFile(filename)
+        zip.extractall(android_dir, get_members(zip))
 
-      os.chdir(to_dir)
-      run_os_command(gradle+" install")
+      os.chdir(android_dir)
+      run_os_command(self.gradle + ' install')
+      run_os_command('rm -Rf ' + android_dir)
         
-      os.chdir("../")
-      shutil.rmtree(to_dir)
-      sublime.status_message("Android build finished!")
+      sublime.status_message('Android build finished!')
 
     except Exception as e:
-      sublime.error_message("Android build failed:\n" + str(e))
+      sublime.error_message('Android build failed:\n' + str(e))
+

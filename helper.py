@@ -1,6 +1,6 @@
 #coding: utf-8
 
-import re, platform, subprocess
+import os, re, platform, subprocess, sublime
 
 def get_members(zip):
     parts = []
@@ -27,3 +27,6 @@ def run_os_command(cmd):
 
 def get_apis_as_string(apis_setting):
     return ' '.join(api.get('module') + '.' + api.get('class') for api in apis_setting)
+
+def get_settings():
+    return sublime.load_settings('AppEngineBuild.sublime-settings')
